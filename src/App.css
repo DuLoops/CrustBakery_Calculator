@@ -1,0 +1,18 @@
+#main {
+  width: 100vw;
+  overflow: hidden;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.title{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.crustImg { 
+  margin: 0 auto;
+}
