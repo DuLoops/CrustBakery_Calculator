@@ -1,72 +1,57 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { blindbakes } from '../quantityData.ts'
-import {db} from '../firebase.ts'
-import { collection, query, where, getDocs, DocumentData } from "firebase/firestore";
+import { db } from '../firebase.ts'
+import { collection, query, where, getDocs, DocumentData, setDoc, doc, or } from "firebase/firestore";
 
 
 interface Props {
-    day: string
+    originalQuantity: any[],
+    day: number
 }
 
+const columns = ['fort', 'kiosk', 'order']
+const clickedItemIndex = 0, clickedColumnIndex = 1;
 
 export default function Chart(props: Props) {
-    const [blindBakesData, setBlindBakesData] = useState<any[]>([]);
-
-    const originalQuantity = blindbakes[props.day]
-    const [quantity, setQuantity] = useState(JSON.parse(JSON.stringify(originalQuantity)))
+    const [quantity, setQuantity] = useState<any[]>([]);
     const [total, setTotal] = useState(0)
-    const [clicked, setClicked] = useState<string[]>([])
-    let ogQuant, newQuant;
+    const [clicked, setClicked] = useState<[number, number]| null>(null)
 
-    useEffect( () => {
-        const fetchData = async () => {
-            try {
-                const q = query(collection(db, "blindBakes"));
+    const [clickedOgQuant, setclickedOgQuant] = useState(0)
+    const [clickedNewQuant, setclickedNewQuant] = useState(0)
 
-                const querySnapshot = await getDocs(q);
-                const data: any[] = [];
-                querySnapshot.forEach((doc) => {
-                    data.push(doc.data());
-                });
-                setBlindBakesData(data);
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        fetchData();
-    }, [props.day])
-    console.log(blindBakesData)
-
-
-    if (clicked.length > 0) {
-        ogQuant = originalQuantity[clicked[0]][clicked[1]]
-        newQuant = quantity[clicked[0]][clicked[1]]
-    }
+    useEffect(() => {
+        setQuantity(JSON.parse(JSON.stringify(props.originalQuantity)))
+    }, [props.originalQuantity])
 
     useEffect(() => {
         let sum = 0
         for (let item in quantity) {
-            sum += quantity[item].fort + quantity[item].kiosk + quantity[item].order
+            for (let column of columns) {
+                sum += quantity[item][column][props.day]
+            }
         }
         setTotal(sum)
     }, [quantity])
 
-
-
+    useEffect(() => {
+        if(clicked) {
+            setclickedOgQuant(props.originalQuantity[clicked[clickedItemIndex]][clicked[clickedColumnIndex]][props.day])
+            setclickedNewQuant(quantity[clicked[clickedItemIndex]][clicked[clickedColumnIndex]][props.day])
+        }
+    },[clicked, quantity])
 
     const handleRemoteClick = useCallback((num: number) => {
-        console.log(originalQuantity[clicked[0]][clicked[1]])
-        console.log(quantity[clicked[0]][clicked[1]])
-        if (clicked.length === 0) return;
-        let newNum = quantity[clicked[0]][clicked[1]] + num;
+        if (clicked === null) return;
+        let newNum = quantity[clicked[clickedItemIndex]][clicked[clickedColumnIndex]][props.day] + num;
+        if (newNum < 0) newNum = 0;
         setQuantity((prev: any) => {
-            prev[clicked[0]][clicked[1]] = newNum
-            if (prev[clicked[0]][clicked[1]] < 0) prev[clicked[0]][clicked[1]] = 0;
-            return { ...prev };
+            prev[clicked[clickedItemIndex]][clicked[clickedColumnIndex]][props.day] = newNum
+            return [...prev];
         });
     }, [clicked]);
-    
+
 
     return (
         <div className='text-xl box-border'>
@@ -75,25 +60,27 @@ export default function Chart(props: Props) {
                     <thead>
                         <tr className='bg-gray-300'>
                             <th>Tart</th>
-                            <th>Fort</th>
-                            <th>Kiosk</th>
-                            <th>Order</th>
+                            {columns.map((item, index) => (
+                                <th key={index}>{item}</th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {quantity && Object.entries(quantity).map((item: any, index: any) => (
-                            <tr key={index}>
-                                <td className='p-2 border-r-2'>{item[0]}</td>
-                                {Object.entries(item[1]).map((itemDet: any) => (
-                                    <td key={itemDet[0]} className={`${(clicked[0] == item[0] && clicked[1] == itemDet[0]) && 'text-red-800 bg-pink-100' } `} onClick={() => setClicked([item[0], itemDet[0]])}>{itemDet[1]}</td>
-                                ))}
+                        {quantity && quantity.map((item: any, itemIndex: any) => (
+                            <tr key={itemIndex}>
+                                <td className='p-2 border-r-2'>{item.name}</td>
+                                {columns.map((column: any) => (
+                                    <td key={column} className={`${clicked && (clicked[clickedItemIndex] == itemIndex && clicked[clickedColumnIndex] == column) && 'text-red-800 bg-pink-100'} `} onClick={() => setClicked([itemIndex, column])}>{item[column][props.day]}</td>
+                                ))
+                                }
                             </tr>
-                        ))}
+                        ))
+                        }
                     </tbody>
                 </table>
                 <div className='flex justify-center items-center gap-6 p-3 my-3'>
                     <button className='rounded-full bg-blue-300 w-12 h-12 text-2xl' onClick={() => { handleRemoteClick(1) }}>+</button>
-                    {clicked.length > 1 && <p>{ogQuant}<span className='text-2xl'> {newQuant - ogQuant >= 0 && '+'} {newQuant - ogQuant}</span></p>}
+                    {clicked && <p>{clickedOgQuant} <span className='text-2xl text-bold'> {clickedNewQuant - clickedOgQuant >= 0 && '+'} {clickedNewQuant - clickedOgQuant}</span></p>}
                     <button className='rounded-full bg-red-300 w-12 h-12 text-2xl' onClick={() => { handleRemoteClick(-1) }}>-</button>
                 </div>
             </div>
