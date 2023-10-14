@@ -4,6 +4,11 @@ const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 function App() {
   const date = new Date()
   let day = dayNames[date.getDay()]
+
+  const handleEdit = () => {
+
+  }
+
   return (
     <div id='main' className='bg-stone-300 h-screen'>
       <div className='title my-3'>
@@ -11,7 +16,8 @@ function App() {
       </div>
       <Chart day={day.toLocaleLowerCase()}/>
       <p className='mt-2'>Day: {date.getMonth() + '/' + date.getDate() + ' (' + day + ')'}</p>
-      <button className='rounded bg-blue-100 p-1' onClick={()=>{location.reload()}}>Reset</button>
+      <button className='rounded bg-blue-100 p-2' onClick={()=>{location.reload()}}>Reset</button>
+      <button className='rounded bg-red-100 p-2 ml-2' onClick={handleEdit}>Edit</button>
     </div>
   )
 }

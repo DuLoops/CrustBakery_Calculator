@@ -1,6 +1,6 @@
 const blindbakes: any = {
     'mon': {
-        'Curd' : {
+        'curd' : {
             'fort' : 20,
             'kiosk' : 15,
             'order': 0
@@ -22,7 +22,7 @@ const blindbakes: any = {
         },
     },
     'tue': {
-        'Curd' : {
+        'curd' : {
             'fort' : 22,
             'kiosk' : 15,
             'order': 0
@@ -44,7 +44,7 @@ const blindbakes: any = {
         },
     },
     'wed': {
-        'Curd' : {
+        'curd' : {
             'fort' : 22,
             'kiosk' : 15,
             'order': 0
@@ -66,7 +66,7 @@ const blindbakes: any = {
         },
     },
     'thu': {
-        'Curd' : {
+        'curd' : {
             'fort' : 24,
             'kiosk' : 15,
             'order': 0
@@ -88,7 +88,7 @@ const blindbakes: any = {
         },
     },
     'fri': {
-        'Curd' : {
+        'curd' : {
             'fort' : 26,
             'kiosk' : 15,
             'order': 0
@@ -110,7 +110,7 @@ const blindbakes: any = {
         },
     },
     'sat': {
-        'Curd' : {
+        'curd' : {
             'fort' : 25,
             'kiosk' : 15,
             'order': 0
@@ -132,7 +132,7 @@ const blindbakes: any = {
         },
     },
     'sun': {
-        'Curd' : {
+        'curd' : {
             'fort' : 25,
             'kiosk' : 15,
             'order': 0

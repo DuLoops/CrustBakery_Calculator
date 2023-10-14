@@ -1,16 +1,44 @@
+
 import { useState, useEffect, useCallback } from 'react'
 import { blindbakes } from '../quantityData.ts'
+import {db} from '../firebase.ts'
+import { collection, query, where, getDocs, DocumentData } from "firebase/firestore";
+
 
 interface Props {
     day: string
 }
 
+
 export default function Chart(props: Props) {
+    const [blindBakesData, setBlindBakesData] = useState<any[]>([]);
+
     const originalQuantity = blindbakes[props.day]
     const [quantity, setQuantity] = useState(JSON.parse(JSON.stringify(originalQuantity)))
     const [total, setTotal] = useState(0)
     const [clicked, setClicked] = useState<string[]>([])
     let ogQuant, newQuant;
+
+    useEffect( () => {
+        const fetchData = async () => {
+            try {
+                const q = query(collection(db, "blindBakes"));
+
+                const querySnapshot = await getDocs(q);
+                const data: any[] = [];
+                querySnapshot.forEach((doc) => {
+                    data.push(doc.data());
+                });
+                setBlindBakesData(data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchData();
+    }, [props.day])
+    console.log(blindBakesData)
+
+
     if (clicked.length > 0) {
         ogQuant = originalQuantity[clicked[0]][clicked[1]]
         newQuant = quantity[clicked[0]][clicked[1]]
