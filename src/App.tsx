@@ -42,7 +42,7 @@ function App() {
       <p className='mt-2'>Day: {date.getMonth() + '/' + date.getDate() + ' (' + dayNames[day] + ')'}</p>
       <button className='rounded bg-blue-100 p-2' onClick={()=>{location.reload()}}>Reset</button>
       <button className='rounded bg-red-100 p-2 ml-2' onClick={()=>{setOpenModal(!openModal)}}>Edit</button>
-      {openModal && <EditModal setOpenModal={setOpenModal}/>}
+      {openModal && <EditModal setOpenModal={setOpenModal} originalQuantity={originalQuantity}/>}
     </div>
   )
 }
