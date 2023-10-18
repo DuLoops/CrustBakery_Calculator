@@ -10,15 +10,12 @@ export default function EditBody(props: Props) {
     const [newQuantityData, setNewQuantityData] = useState<any[]>(props.originalQuantity.map(item => ({ ...item })));
     const [pagination, setPagination] = useState(0)
 
-
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewQuantityData((prev) => {
             prev[pagination].name = e.target.value
             return [...prev]
         }
         )
-        console.log(props.originalQuantity)
-        console.log(newQuantityData)
     }
 
     return (
@@ -34,8 +31,7 @@ export default function EditBody(props: Props) {
                 <p>Name: </p>
                 <input type="text" className='border-2 border-gray-400 rounded-md p-1' onChange={handleNameChange} value={newQuantityData[pagination].name} />
             </div>
-            <div></div>
-            <EditChart originalQuantity={props.originalQuantity[pagination]} />
+            <EditChart newQuantityData={newQuantityData[pagination]} setNewQuantityData={setNewQuantityData} pagination={pagination}/>
         </div> 
     )
 }
