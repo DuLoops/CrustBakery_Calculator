@@ -30,8 +30,9 @@ function App() {
         }
     }
     fetchData();
-}, [])
+}, [openModal])
 
+  console.log(originalQuantity)
 
   return (
     <div id='main' className='bg-stone-300 h-screen'>

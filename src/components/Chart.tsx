@@ -1,8 +1,5 @@
 
 import { useState, useEffect, useCallback } from 'react'
-import { blindbakes } from '../quantityData.ts'
-import { db } from '../firebase.ts'
-import { collection, query, where, getDocs, DocumentData, setDoc, doc, or } from "firebase/firestore";
 
 
 interface Props {
