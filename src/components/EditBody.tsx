@@ -62,8 +62,8 @@ export default function EditBody(props: Props) {
                 <input type="text" className='border-2 border-gray-400 rounded-md p-1' onChange={handleNameChange} value={props.quantityData[pagination].name} />
             </div>
             <EditChart newQuantityData={props.quantityData[pagination]} setNewQuantityData={props.setQuantityData} pagination={pagination}/>
-            <button className='rounded bg-red-400 p-2' onClick={handleDocDelete}>Delete Doc</button>
-            <button className='rounded bg-blue-400 p-2 ml-2' onClick={handleDocAdd}>Add Doc</button>            
+            <button className='rounded bg-blue-400 p-2 ml-2' onClick={handleDocAdd}>Add Item</button>            
+            <button className='rounded bg-red-400 p-2' onClick={handleDocDelete}>Delete Item</button>
         </div> 
     )
 }

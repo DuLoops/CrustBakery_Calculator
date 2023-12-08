@@ -1,49 +1,28 @@
 import './App.css'
-import Chart from './components/Chart'
-import { useState, useEffect } from 'react'
-import { db } from './firebase.ts'
-import {query, collection, getDocs} from 'firebase/firestore'
-import EditModal from './components/EditModal.tsx'
+import BlindTartCalculator from './pages/BlindTartCalculator.tsx'
+import OrderOrganizer from './pages/OrderOrganizer.tsx'
+import { useState } from 'react'
+const menuItems = ['Order Organizer', 'Blind Tarts Calculator']
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function App() {
   const date = new Date()
   const day = date.getDay()
-  const [originalQuantity, setOriginalQuantity] = useState<any[]>([]);
-  const [openModal, setOpenModal] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const q = query(collection(db, "blindBakes"));
-
-            const querySnapshot = await getDocs(q);
-            const data: any[] = [];
-            querySnapshot.forEach((doc) => {
-                const docD = doc.data()
-                docD.id = doc.id;
-                data.push(docD);
-            });
-            setOriginalQuantity(data);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-    fetchData();
-}, [openModal])
-
-  console.log(originalQuantity)
+  const [menu, setMenu] = useState(menuItems[0])
 
   return (
-    <div id='main' className='bg-stone-300 h-screen'>
-      <div className='title my-3'>
-        <h1 className='text-2xl'>Blind Tarts Calculator</h1>
+    <div id='main' className='bg-stone-300 min-h-screen'>
+      <h1 className='text-2xl mt-2'>Crust Bakery Helper</h1>
+      <p className='mb-2'>Day: {date.getMonth() + '/' + date.getDate() + ' (' + dayNames[day] + ')'}</p>
+      <div className='flex gap-2 justify-center items-center mt-3'>
+        <p>Menu: </p>
+        {menuItems.map((item, i) => (
+          <button key={i} className={`rounded border-2 p-1 ${item == menu ? 'border-green-500 bg-green-200' : 'border-gray-500'}`} onClick={()=>setMenu(item)}>{item}</button>
+        ))}
       </div>
-      <Chart originalQuantity={originalQuantity} day={day}/>
-      <p className='mt-2'>Day: {date.getMonth() + '/' + date.getDate() + ' (' + dayNames[day] + ')'}</p>
-      <button className='rounded bg-blue-100 p-2' onClick={()=>{location.reload()}}>Reset</button>
-      <button className='rounded bg-red-100 p-2 ml-2' onClick={()=>{setOpenModal(!openModal)}}>Edit</button>
-      {openModal && <EditModal setOpenModal={setOpenModal} originalQuantity={originalQuantity}/>}
+      {menu == 'Order Organizer' && <OrderOrganizer/>}
+      {menu == 'Blind Tarts Calculator' && <BlindTartCalculator day={day}/>}
     </div>
   )
 }
